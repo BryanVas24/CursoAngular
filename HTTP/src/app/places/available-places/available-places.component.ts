@@ -4,7 +4,7 @@ import { Place } from '../place.model';
 import { PlacesComponent } from '../places.component';
 import { PlacesContainerComponent } from '../places-container/places-container.component';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-available-places',
@@ -16,6 +16,7 @@ import { map } from 'rxjs';
 export class AvailablePlacesComponent implements OnInit {
   places = signal<Place[] | undefined>(undefined);
   isfetching = signal(false);
+  error = signal('');
   //Esto es para inyectar el HtttpClient
   private httpClient = inject(HttpClient);
   private destroy = inject(DestroyRef);
@@ -25,11 +26,21 @@ export class AvailablePlacesComponent implements OnInit {
     const suscription = this.httpClient
       //Tambien podes configurarlos despues de la url ,{}
       .get<{ places: Place[] }>('http://localhost:3000/places')
-      //pipe se usa para modificar datos antes de enviarlos al suscribe
-      .pipe(map((resdata) => resdata.places))
+      //pipe se usa para modificar datos antes de enviarlos al suscribe (Lo de acá no es necesario pero podes usarlos)
+      .pipe(
+        map((resdata) => resdata.places),
+        //Asi se pueden manejar errores, pero es más complejo Xd
+        catchError((error) => {
+          return throwError(() => new Error('Something went wrong'));
+        })
+      )
       .subscribe({
         next: (places) => {
           this.places.set(places);
+        },
+        //Se ejecuta si hay un error en la suscripción
+        error: (err: Error) => {
+          this.error.set(err?.message);
         },
         //Se ejecuta una vez todo el proceso termine
         complete: () => {
