@@ -15,18 +15,25 @@ import { map } from 'rxjs';
 })
 export class AvailablePlacesComponent implements OnInit {
   places = signal<Place[] | undefined>(undefined);
+  isfetching = signal(false);
   //Esto es para inyectar el HtttpClient
   private httpClient = inject(HttpClient);
   private destroy = inject(DestroyRef);
   //Manera de hacer un get (el onInit es practicamente el useEffect)
   ngOnInit() {
+    this.isfetching.set(true);
     const suscription = this.httpClient
       //Tambien podes configurarlos despues de la url ,{}
       .get<{ places: Place[] }>('http://localhost:3000/places')
+      //pipe se usa para modificar datos antes de enviarlos al suscribe
       .pipe(map((resdata) => resdata.places))
       .subscribe({
         next: (places) => {
           this.places.set(places);
+        },
+        //Se ejecuta una vez todo el proceso termine
+        complete: () => {
+          this.isfetching.set(false);
         },
       });
     //no es necesario pero es para limpiar la suscripción http
