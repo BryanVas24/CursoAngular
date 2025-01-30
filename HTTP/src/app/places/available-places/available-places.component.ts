@@ -20,6 +20,20 @@ export class AvailablePlacesComponent implements OnInit {
   //Esto es para inyectar el HtttpClient
   private httpClient = inject(HttpClient);
   private destroy = inject(DestroyRef);
+
+  onSelectPlace(selectedPlace: Place) {
+    //Asi se hace un put
+    this.httpClient
+      .put('http://localhost:3000/user-places', {
+        placeId: selectedPlace.id,
+      })
+      .subscribe({
+        next: (resData) => {
+          console.log(resData);
+        },
+      });
+  }
+
   //Manera de hacer un get (el onInit es practicamente el useEffect)
   ngOnInit() {
     this.isfetching.set(true);
