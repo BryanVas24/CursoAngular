@@ -4,6 +4,7 @@ import { Place } from '../place.model';
 import { PlacesComponent } from '../places.component';
 import { PlacesContainerComponent } from '../places-container/places-container.component';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-available-places',
@@ -20,10 +21,12 @@ export class AvailablePlacesComponent implements OnInit {
   //Manera de hacer un get (el onInit es practicamente el useEffect)
   ngOnInit() {
     const suscription = this.httpClient
+      //Tambien podes configurarlos despues de la url ,{}
       .get<{ places: Place[] }>('http://localhost:3000/places')
+      .pipe(map((resdata) => resdata.places))
       .subscribe({
-        next: (resdata) => {
-          console.log(resdata);
+        next: (places) => {
+          this.places.set(places);
         },
       });
     //no es necesario pero es para limpiar la suscripción http
