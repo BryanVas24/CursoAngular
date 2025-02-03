@@ -5,6 +5,7 @@ import { PlacesComponent } from '../places.component';
 import { PlacesContainerComponent } from '../places-container/places-container.component';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, throwError } from 'rxjs';
+import { PlacesService } from '../places.service';
 
 @Component({
   selector: 'app-available-places',
@@ -17,53 +18,38 @@ export class AvailablePlacesComponent implements OnInit {
   places = signal<Place[] | undefined>(undefined);
   isfetching = signal(false);
   error = signal('');
-  //Esto es para inyectar el HtttpClient
-  private httpClient = inject(HttpClient);
+  //Esto llama a una función de un servicio
+  private Places = inject(PlacesService);
   private destroy = inject(DestroyRef);
 
   onSelectPlace(selectedPlace: Place) {
     //Asi se hace un put
-    this.httpClient
-      .put('http://localhost:3000/user-places', {
-        placeId: selectedPlace.id,
-      })
-      .subscribe({
-        complete: () => {
-          console.log('Place added to user places!');
-        },
-        error: (err: Error) => {
-          this.error.set('We can´t add to your favorites places :(');
-        },
-      });
+    this.Places.addPlaceToUserPlaces(selectedPlace.id).subscribe({
+      complete: () => {
+        console.log('Place added to user places!');
+      },
+      error: (err: Error) => {
+        this.error.set('We can´t add to your favorites places :(');
+      },
+    });
   }
 
   //Manera de hacer un get (el onInit es practicamente el useEffect)
   ngOnInit() {
     this.isfetching.set(true);
-    const suscription = this.httpClient
-      //Tambien podes configurarlos despues de la url ,{}
-      .get<{ places: Place[] }>('http://localhost:3000/places')
-      //pipe se usa para modificar datos antes de enviarlos al suscribe (Lo de acá no es necesario pero podes usarlos)
-      .pipe(
-        map((resdata) => resdata.places),
-        //Asi se pueden manejar errores, pero es más complejo Xd
-        catchError((error) => {
-          return throwError(() => new Error('Something went wrong'));
-        })
-      )
-      .subscribe({
-        next: (places) => {
-          this.places.set(places);
-        },
-        //Se ejecuta si hay un error en la suscripción
-        error: (err: Error) => {
-          this.error.set(err?.message);
-        },
-        //Se ejecuta una vez todo el proceso termine
-        complete: () => {
-          this.isfetching.set(false);
-        },
-      });
+    const suscription = this.Places.loadAvailablePlaces().subscribe({
+      next: (places) => {
+        this.places.set(places);
+      },
+      //Se ejecuta si hay un error en la suscripción
+      error: (err: Error) => {
+        this.error.set(err?.message);
+      },
+      //Se ejecuta una vez todo el proceso termine
+      complete: () => {
+        this.isfetching.set(false);
+      },
+    });
     //no es necesario pero es para limpiar la suscripción http
     this.destroy.onDestroy(() => {
       suscription.unsubscribe();
