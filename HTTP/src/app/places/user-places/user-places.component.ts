@@ -14,19 +14,16 @@ import { PlacesService } from '../places.service';
   imports: [PlacesContainerComponent, PlacesComponent],
 })
 export class UserPlacesComponent implements OnInit {
-  places = signal<Place[] | undefined>(undefined);
   isfetching = signal(false);
   error = signal('');
   //Esto es para inyectar el HtttpClient
   private FetchedPlaces = inject(PlacesService);
   private destroy = inject(DestroyRef);
+  places = this.FetchedPlaces.loadedUserPlaces;
 
   ngOnInit() {
     this.isfetching.set(true);
     const suscription = this.FetchedPlaces.loadUserPlaces().subscribe({
-      next: (places) => {
-        this.places.set(places);
-      },
       //Se ejecuta si hay un error en la suscripción
       error: (err: Error) => {
         this.error.set(err?.message);

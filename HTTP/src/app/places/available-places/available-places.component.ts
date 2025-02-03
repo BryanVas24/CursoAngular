@@ -24,7 +24,7 @@ export class AvailablePlacesComponent implements OnInit {
 
   onSelectPlace(selectedPlace: Place) {
     //Asi se hace un put
-    this.Places.addPlaceToUserPlaces(selectedPlace.id).subscribe({
+    this.Places.addPlaceToUserPlaces(selectedPlace).subscribe({
       complete: () => {
         console.log('Place added to user places!');
       },
