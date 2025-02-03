@@ -28,8 +28,11 @@ export class AvailablePlacesComponent implements OnInit {
         placeId: selectedPlace.id,
       })
       .subscribe({
-        next: (resData) => {
-          console.log(resData);
+        complete: () => {
+          console.log('Place added to user places!');
+        },
+        error: (err: Error) => {
+          this.error.set('We can´t add to your favorites places :(');
         },
       });
   }
