@@ -38,4 +38,8 @@ export class UserPlacesComponent implements OnInit {
       suscription.unsubscribe();
     });
   }
+
+  onRemovePlaces(place: Place) {
+    this.FetchedPlaces.removeUserPlace(place).subscribe();
+  }
 }
