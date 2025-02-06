@@ -5,7 +5,15 @@
   <div class="control-row">
     <div class="control no-margin">
       <label for="email">Email</label>
-      <input id="email" type="email" name="email" ngModel email required />
+      <input
+        id="email"
+        type="email"
+        name="email"
+        ngModel
+        email
+        required
+        #email="ngModel"
+      />
     </div>
 
     <div class="control no-margin">
@@ -17,9 +25,19 @@
         ngModel
         minlength="6"
         required
+        #password="ngModel"
       />
     </div>
 
     <button class="button">Login</button>
   </div>
+  <!--Esta es una manera de validar campos, pero se recomienda usar mejor variables de plantillas
+  @if(form.form.controls["email"] && form.form.controls["email"]&&
+  form.form.touched && form.form.invalid){
+  <p class="control-error">Invalid values detected, check your inputs</p>
+  }
+  -->
+  @if(email.touched && password.touched && form.form.invalid){
+  <p class="control-error">Invalid values detected, check your inputs</p>
+  }
 </form>
