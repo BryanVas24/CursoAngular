@@ -37,7 +37,10 @@
   <p class="control-error">Invalid values detected, check your inputs</p>
   }
   -->
-  @if(email.touched && password.touched && form.form.invalid){
-  <p class="control-error">Invalid values detected, check your inputs</p>
+
+  @if(email.touched && email.dirty && email.invalid){
+  <p class="control-error">Invalid email addres</p>
+  } @if(password.touched && password.dirty && password.invalid){
+  <p class="control-error">Invalid password lenght it must have 6 characters</p>
   }
 </form>
