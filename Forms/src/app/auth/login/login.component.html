@@ -16,4 +16,12 @@
 
     <button class="button">Login</button>
   </div>
+
+  @if(emailIsInvalidCondition ){
+  <p class="control-error">Please enter a valid email address.</p>
+  } @if(passwordInvalidCondition ){
+  <p class="control-error">
+    Please enter a valid password (at least 6 characters long).
+  </p>
+  }
 </form>
