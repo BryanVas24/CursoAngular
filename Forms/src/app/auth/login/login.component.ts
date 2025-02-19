@@ -6,12 +6,21 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { of } from 'rxjs';
 //Ejemplo de validator manual
 function mustContainsQuestionMark(control: AbstractControl) {
   if (control.value.includes('?')) {
     return null;
   }
   return { doesnotContainsQuestionMark: true };
+}
+//Este es un validator asincrono, por lop que podrias validar si el usuario no existe
+function emailIsUnique(control: AbstractControl) {
+  //El email esta hard codeado por ejemplo
+  if (control.value === 'test@example.com') {
+    return of({ emailIsrepeated: true });
+  }
+  return of(null);
 }
 @Component({
   selector: 'app-login',
@@ -41,7 +50,7 @@ export class LoginComponent {
     //Para añadir validaciones podes usar un [] de validators o {} configuración
     //Los validators son funciones built-in o construidas manualmente
     email: new FormControl('', {
-      validators: [Validators.email, Validators.required],
+      validators: [Validators.email, Validators.required, emailIsUnique],
     }),
     password: new FormControl('', {
       //Solo pasas el nombre de la función porque Angular la va a ejecutar por vos
