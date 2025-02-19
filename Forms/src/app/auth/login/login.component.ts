@@ -50,7 +50,8 @@ export class LoginComponent {
     //Para añadir validaciones podes usar un [] de validators o {} configuración
     //Los validators son funciones built-in o construidas manualmente
     email: new FormControl('', {
-      validators: [Validators.email, Validators.required, emailIsUnique],
+      validators: [Validators.email, Validators.required],
+      asyncValidators: [emailIsUnique],
     }),
     password: new FormControl('', {
       //Solo pasas el nombre de la función porque Angular la va a ejecutar por vos
