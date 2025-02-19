@@ -1,11 +1,18 @@
 import { Component } from '@angular/core';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-
+//Ejemplo de validator manual
+function mustContainsQuestionMark(control: AbstractControl) {
+  if (control.value.includes('?')) {
+    return null;
+  }
+  return { doesnotContainsQuestionMark: true };
+}
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -37,7 +44,13 @@ export class LoginComponent {
       validators: [Validators.email, Validators.required],
     }),
     password: new FormControl('', {
-      validators: [Validators.minLength(6), Validators.required],
+      //Solo pasas el nombre de la función porque Angular la va a ejecutar por vos
+
+      validators: [
+        Validators.minLength(6),
+        Validators.required,
+        mustContainsQuestionMark,
+      ],
     }),
   });
   onSubmit() {
