@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -19,30 +20,42 @@ export class SignupComponent {
     email: new FormControl('', {
       validators: [Validators.email, Validators.required],
     }),
-    password: new FormControl('', {
-      validators: [Validators.minLength(6), Validators.required],
+    //Podes usar FormGroups dentro de formGroups
+    passwords: new FormGroup({
+      password: new FormControl('', {
+        validators: [Validators.minLength(6), Validators.required],
+      }),
+      confirmPassword: new FormControl('', {
+        validators: [Validators.minLength(6), Validators.required],
+      }),
     }),
-    confirmPassword: new FormControl('', {
-      validators: [Validators.minLength(6), Validators.required],
-    }),
+
     firstName: new FormControl('', {
       validators: [Validators.required],
     }),
     lastName: new FormControl('', {
       validators: [Validators.required],
     }),
-    street: new FormControl('', {
-      validators: [Validators.required],
+    address: new FormGroup({
+      street: new FormControl('', {
+        validators: [Validators.required],
+      }),
+      number: new FormControl('', {
+        validators: [Validators.required, Validators.maxLength(8)],
+      }),
+      postalCode: new FormControl('', {
+        validators: [Validators.required],
+      }),
+      city: new FormControl('', {
+        validators: [Validators.required],
+      }),
     }),
-    number: new FormControl('', {
-      validators: [Validators.required, Validators.maxLength(8)],
-    }),
-    postalCode: new FormControl('', {
-      validators: [Validators.required],
-    }),
-    city: new FormControl('', {
-      validators: [Validators.required],
-    }),
+    source: new FormArray([
+      new FormControl(false),
+      new FormControl(false),
+      new FormControl(false),
+      new FormControl(false),
+    ]),
     //el select
     role: new FormControl<
       'student' | 'teacher' | 'employee' | 'founder' | 'other'
