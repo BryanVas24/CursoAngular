@@ -22,12 +22,36 @@ export class SignupComponent {
     password: new FormControl('', {
       validators: [Validators.minLength(6), Validators.required],
     }),
+    confirmPassword: new FormControl('', {
+      validators: [Validators.minLength(6), Validators.required],
+    }),
+    firstName: new FormControl('', {
+      validators: [Validators.required],
+    }),
+    lastName: new FormControl('', {
+      validators: [Validators.required],
+    }),
+    street: new FormControl('', {
+      validators: [Validators.required],
+    }),
+    number: new FormControl('', {
+      validators: [Validators.required, Validators.maxLength(8)],
+    }),
+    postalCode: new FormControl('', {
+      validators: [Validators.required],
+    }),
+    city: new FormControl('', {
+      validators: [Validators.required],
+    }),
+    //el select
+    role: new FormControl<
+      'student' | 'teacher' | 'employee' | 'founder' | 'other'
+    >('student', { validators: [Validators.required] }),
+    agree: new FormControl(false, { validators: [Validators.required] }),
   });
 
   onSubmit() {
-    const enteredEmail = this.form.value.email;
-    const enterePassword = this.form.value.password;
-    console.log(enterePassword, enteredEmail);
+    console.log(this.form);
   }
   onReset() {
     this.form.reset();
